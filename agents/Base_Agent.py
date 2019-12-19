@@ -94,7 +94,7 @@ class Base_Agent(object):
         """Gets average score required to win game"""
         print("TITLE ", self.environment_title)
         if self.environment_title == "FetchReach": return -5
-        if self.environment_title in ["AntMaze", "Hopper", "Walker2d"]:
+        if self.environment_title in ["AntMaze", "Hopper", "Walker2d", "Breakout"]:
             print("Score required to win set to infinity therefore no learning rate annealing will happen")
             return float("inf")
         try: return self.environment.unwrapped.reward_threshold
@@ -108,7 +108,10 @@ class Base_Agent(object):
         """Gets the number of trials to average a score over"""
         if self.environment_title in ["AntMaze", "FetchReach", "Hopper", "Walker2d", "CartPole"]: return 100
         try: return self.environment.unwrapped.trials
-        except AttributeError: return self.environment.spec.trials
+        except AttributeError: 
+            try: return self.environment.spec.trials
+            except AttributeError:
+                return 0
 
     def setup_logger(self):
         """Sets up the logger"""

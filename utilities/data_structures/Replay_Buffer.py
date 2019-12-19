@@ -16,6 +16,11 @@ class Replay_Buffer(object):
 
     def add_experience(self, states, actions, rewards, next_states, dones):
         """Adds experience(s) into the replay buffer"""
+        states = np.expand_dims(states, 0)
+        actions = np.expand_dims(actions, 0)
+        rewards = np.expand_dims(rewards, 0)
+        next_states = np.expand_dims(next_states, 0)
+        dones = np.expand_dims(dones, 0)
         if type(dones) == list:
             assert type(dones[0]) != list, "A done shouldn't be a list"
             experiences = [self.experience(state, action, reward, next_state, done)
