@@ -8,13 +8,14 @@ import torch
 import time
 # import tensorflow as tf
 from nn_builder.pytorch.NN import NN
-# from tensorboardX import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
 from torch.optim import optimizer
 
 class Base_Agent(object):
 
     def __init__(self, config):
         self.logger = self.setup_logger()
+        self.tb_logger = SummaryWriter()
         self.debug_mode = config.debug_mode
         # if self.debug_mode: self.tensorboard = SummaryWriter()
         self.config = config
@@ -94,7 +95,7 @@ class Base_Agent(object):
         """Gets average score required to win game"""
         print("TITLE ", self.environment_title)
         if self.environment_title == "FetchReach": return -5
-        if self.environment_title in ["AntMaze", "Hopper", "Walker2d", "Breakout"]:
+        if self.environment_title in ["AntMaze", "Hopper", "Walker2d", "Breakout", "BreakoutDeterministic"]:
             print("Score required to win set to infinity therefore no learning rate annealing will happen")
             return float("inf")
         try: return self.environment.unwrapped.reward_threshold
@@ -228,6 +229,7 @@ class Base_Agent(object):
         text = """"\r Episode {0}, Score: {3: .2f}, Max score seen: {4: .2f}, Rolling score: {1: .2f}, Max rolling score seen: {2: .2f}"""
         sys.stdout.write(text.format(len(self.game_full_episode_scores), self.rolling_results[-1], self.max_rolling_score_seen,
                                      self.game_full_episode_scores[-1], self.max_episode_score_seen))
+        self.tb_logger.add_scalar("reward", self.game_full_episode_scores[-1], self.episode_number)
         sys.stdout.flush()
 
     def show_whether_achieved_goal(self):

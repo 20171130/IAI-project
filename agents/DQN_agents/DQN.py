@@ -26,6 +26,7 @@ class DQN(Base_Agent):
 
     def step(self):
         """Runs a step within a game including a learning step if required"""
+        cnt = 0
         while not self.done:
             self.action = self.pick_action()
             self.conduct_action(self.action)
@@ -35,6 +36,8 @@ class DQN(Base_Agent):
             self.save_experience()
             self.state = self.next_state #this is to set the state for the next iteration
             self.global_step_number += 1
+            cnt += 1
+        self.tb_logger.add_scalar("duration", cnt, self.episode_number)
         self.episode_number += 1
 
     def pick_action(self, state=None):
