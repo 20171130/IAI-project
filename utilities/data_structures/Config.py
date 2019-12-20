@@ -19,5 +19,6 @@ class Config(object):
         self.show_solution_score = False
         self.debug_mode = False
         self.model_class = None
+        self.device = None
 
 

@@ -14,7 +14,7 @@ class DQN(Base_Agent):
     agent_name = "DQN"
     def __init__(self, config):
         Base_Agent.__init__(self, config)
-        self.memory = Replay_Buffer(self.hyperparameters["buffer_size"], self.hyperparameters["batch_size"], config.seed)
+        self.memory = Replay_Buffer(config)
         self.q_network_local = config.model_class(config).to(self.device)
         self.q_network_optimizer = optim.Adam(self.q_network_local.parameters(),
                                               lr=self.hyperparameters["learning_rate"], eps=1e-4)
